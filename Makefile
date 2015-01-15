@@ -12,7 +12,7 @@ DEPS = github.com/garyburd/redigo/redis \
 # so that import path resolution will prioritize
 # our third party snapshots.
 GOPATH := ${PWD}/$(DEPS_FOLDER):${GOPATH}
-export GOPATH
+export GOPATH=$(GOPATH)
 
 default: build
 

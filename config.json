@@ -8,7 +8,7 @@
         "TotalRedirectsKey": ""
     },
     "Web": {
-        "Base": "wab.io",
+        "Base": "wab.io/",
         "Port": 8080
     }
 }
