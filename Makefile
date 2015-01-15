@@ -11,8 +11,8 @@ DEPS = github.com/garyburd/redigo/redis \
 # Prepend our _vendor directory to the system GOPATH
 # so that import path resolution will prioritize
 # our third party snapshots.
-GOPATH := ${PWD}/$(DEPS_FOLDER):${GOPATH}
-export GOPATH=$(GOPATH)
+GP := ${PWD}/$(DEPS_FOLDER):${GOPATH}
+export GOPATH=$(GP)
 
 default: build
 
