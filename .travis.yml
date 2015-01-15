@@ -4,4 +4,6 @@ go:
   - 1.3
   - tip
 
-install: make vendor_get
+install:
+  - go get github.com/garyburd/redigo/redis
+  - go get github.com/OneOfOne/xxhash/native
