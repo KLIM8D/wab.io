@@ -1,0 +1,14 @@
+{
+    "Redis": {
+        "Host": "127.0.0.1:42024"
+    },
+    "Stats": {
+        "Enabled": true,
+        "TotalUrlsKey": "",
+        "TotalRedirectsKey": ""
+    },
+    "Web": {
+        "Base": "wab.io",
+        "Port": 8080
+    }
+}
