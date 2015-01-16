@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/klim8d/wab.io/api"
-	"github.com/klim8d/wab.io/logs"
+	"github.com/KLIM8D/wab.io/api"
+	"github.com/KLIM8D/wab.io/logs"
 	"io/ioutil"
 	"log"
 	"os"

@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/klim8d/wab.io/lib"
+	"github.com/KLIM8D/wab.io/lib"
 	"io/ioutil"
 )
 

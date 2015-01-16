@@ -2,7 +2,7 @@ package api
 
 import (
 	"fmt"
-	"github.com/klim8d/wab.io/lib"
+	"github.com/KLIM8D/wab.io/lib"
 	"log"
 	"net/http"
 	"regexp"

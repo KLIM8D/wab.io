@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/klim8d/wab.io/lib"
+	"github.com/KLIM8D/wab.io/lib"
 	"net/http"
 )
 
