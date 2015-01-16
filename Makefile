@@ -17,31 +17,31 @@ export GOPATH=$(GP)
 default: build
 
 build: vet
-	go build -v -o ./bin/$(APP) ./src/
+	go build -v -o ./bin/$(APP) ./
 
 doc:
 	godoc -http=:6060 -index
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources
 fmt:
-	go fmt ./src/...
+	go fmt ./...
 
 # https://github.com/golang/lint
 # go get github.com/golang/lint/golint
 lint:
-	golint ./src
+	golint ./
 
 run:
 	./bin/$(APP)
 
 debug:
-	go run ./src/main.go -debug=1
+	go run ./main.go -debug=1
 
 test:
-	go test ./src/...
+	go test ./...
 
 vendor_clean:
-	rm -dRf ./$(DEPS_FOLDER)/src
+	rm -dRf ./$(DEPS_FOLDER)/
 
 # We have to set GOPATH to just the .vendor
 # directory to ensure that `go get` doesn't

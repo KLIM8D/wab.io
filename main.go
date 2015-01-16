@@ -1,10 +1,10 @@
 package main
 
 import (
-	"./api"
-	"./logs"
 	"flag"
 	"fmt"
+	"github.com/klim8d/wab.io/api"
+	"github.com/klim8d/wab.io/logs"
 	"io/ioutil"
 	"log"
 	"os"

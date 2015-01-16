@@ -1,8 +1,8 @@
 package api
 
 import (
-	lib "../lib"
 	"fmt"
+	"github.com/klim8d/wab.io/lib"
 	"log"
 	"net/http"
 	"regexp"
