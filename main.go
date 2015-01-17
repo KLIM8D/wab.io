@@ -5,21 +5,29 @@ import (
 	"fmt"
 	"github.com/KLIM8D/wab.io/api"
 	"github.com/KLIM8D/wab.io/logs"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
 )
 
-var debug = flag.Bool("debug", false, "Turn on debug info")
+var debug = flag.Int("mode", 2, "\n Options:\n 0 = Debug \n 1 = Warning \n 2 = Info \n 3 = Quiet \n")
 
 func main() {
 	flag.Parse()
-	if *debug {
+	switch *debug {
+	case logs.DebugMode:
 		fmt.Println("Debugging...")
-		logs.Output = os.Stderr
-	} else {
-		logs.Output = ioutil.Discard
+		logs.Mode = logs.DebugMode
+		break
+	case logs.WarningMode:
+		logs.Mode = logs.WarningMode
+		break
+	case logs.InfoMode:
+		logs.Mode = logs.InfoMode
+		break
+	case logs.Quiet:
+		logs.Mode = logs.Quiet
+		break
 	}
 
 	logs.Initialize()

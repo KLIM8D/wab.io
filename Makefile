@@ -35,7 +35,7 @@ run:
 	./bin/$(APP)
 
 debug:
-	go run ./main.go -debug=1
+	go run ./main.go -mode=0
 
 test:
 	go test ./...
