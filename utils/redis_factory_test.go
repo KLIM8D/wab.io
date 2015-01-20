@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"log"
 	"testing"
 )
 
@@ -12,10 +11,10 @@ var (
 )
 
 // Add a new cached item
-// Pre-condition.: a cached item does not exist in the cache
+// Pre-condition.: The specific cached item does not exist in the cache
 // Post-condition: the cached item is stored in the cache
 func TestAddItem(t *testing.T) {
-	log.Println("### TestAddItem ###")
+	t.Log("### TestAddItem ###")
 
 	v := &ShortenedURL{
 		Key:     key,
@@ -24,9 +23,9 @@ func TestAddItem(t *testing.T) {
 	}
 	factory.Add(v)
 	if s, err := factory.Exists(key); err != nil || s == 0 {
-		t.Error("Item did not exist in the cache after Add ", err)
+		t.Error("The item did exist in the cache", err)
 	} else {
-		log.Printf("Successfully added the item with key: %v \n", key)
+		t.Logf("Successfully added the item with key: %v \n", key)
 	}
 }
 
@@ -34,26 +33,26 @@ func TestAddItem(t *testing.T) {
 // Pre-condition.: a cached item exists in the cache
 // Post-condition: the cached item is retrieved from the cache
 func TestGetItem(t *testing.T) {
-	log.Println("### TestGetItem ###")
+	t.Log("### TestGetItem ###")
 
 	e := &ShortenedURL{}
 	if v, err := factory.Get(key, e); err != nil || v == nil {
 		t.Error("Could not get item: ", err)
 	} else {
-		log.Printf("Item: %v\n", v)
+		t.Logf("Item: %v\n", v)
 	}
-	log.Printf("Successfully retrieved item with key: %v \n", key)
+	t.Logf("Successfully retrieved item with key: %v \n", key)
 }
 
 // Add item to list
 // Pre-condition: none
 // Post-condition: the item is added to the list with the given key
 func TestAddItemList(t *testing.T) {
-	log.Println("### TestAddItemList ###")
+	t.Log("### TestAddItemList ###")
 
 	if v, err := factory.RPush(list, "test"); err != nil {
 		t.Error("Could not add item to list: ", err)
 	} else {
-		log.Printf("Item added, status: %d\n", v)
+		t.Logf("Item added, status: %d\n", v)
 	}
 }
