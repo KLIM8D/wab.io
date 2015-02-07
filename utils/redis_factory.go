@@ -1,10 +1,13 @@
 package utils
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/garyburd/redigo/redis"
+	"github.com/ugorji/go/codec"
 	"runtime"
+)
+
+var (
+	mh codec.MsgpackHandle
 )
 
 func NewFactory(host string) *RedisConf {
@@ -30,6 +33,25 @@ func (conf *RedisConf) NewPool() *redis.Pool {
 	}
 }
 
+func (conf *RedisConf) Encode(v interface{}) ([]byte, error) {
+	var b []byte
+	enc := codec.NewEncoderBytes(&b, &mh)
+	if err := enc.Encode(v); err != nil {
+		return nil, err
+	} else {
+		return b, nil
+	}
+}
+
+func (conf *RedisConf) Decode(b []byte, v interface{}) error {
+	dec := codec.NewDecoderBytes(b, &mh)
+	if err := dec.Decode(v); err != nil {
+		return err
+	} else {
+		return nil
+	}
+}
+
 func (conf *RedisConf) Add(item *ShortenedURL) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -43,13 +65,10 @@ func (conf *RedisConf) Add(item *ShortenedURL) (err error) {
 	c := conf.Pool.Get()
 	defer c.Close()
 
-	fmt.Printf("s: %v\n", item)
-
 	c.Send("MULTI")
-	if s, err := json.Marshal(item); err != nil {
+	if s, err := conf.Encode(item); err != nil {
 		panic(err.Error())
 	} else {
-		fmt.Printf("s: %s\n", string(s))
 		c.Send("SET", item.Key, s)
 
 		if item.Expires > 0 {
@@ -70,7 +89,7 @@ func (conf *RedisConf) Get(key string, e interface{}) (interface{}, error) {
 	if r, err := c.Do("GET", key); err != nil {
 		return nil, err
 	} else {
-		if err = json.Unmarshal(r.([]byte), e); err != nil {
+		if err = conf.Decode(r.([]byte), e); err != nil {
 			return nil, err
 		}
 
@@ -89,11 +108,22 @@ func (conf *RedisConf) Exists(key string) (int64, error) {
 	}
 }
 
-func (conf *RedisConf) RPush(key string, val ...string) (int64, error) {
+func (conf *RedisConf) LPush(key string, val ...string) (int64, error) {
 	c := conf.Pool.Get()
 	defer c.Close()
 
 	if r, err := c.Do("LPUSH", key, val); err != nil {
+		return -1, err
+	} else {
+		return r.(int64), nil
+	}
+}
+
+func (conf *RedisConf) RPush(key string, val ...string) (int64, error) {
+	c := conf.Pool.Get()
+	defer c.Close()
+
+	if r, err := c.Do("RPUSH", key, val); err != nil {
 		return -1, err
 	} else {
 		return r.(int64), nil

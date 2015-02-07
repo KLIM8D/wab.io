@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/ugorji/go/codec"
 	"log"
 	"testing"
 )
@@ -10,6 +11,31 @@ var (
 	list    = "testList"
 	factory = NewFactory(":42024")
 )
+
+func TestEncoding(t *testing.T) {
+	e := &ShortenedURL{
+		Key:     key,
+		Expires: 9001,
+		Url:     "http://google.com/",
+	}
+	var b []byte
+	var mh codec.MsgpackHandle
+	enc := codec.NewEncoderBytes(&b, &mh)
+	if err := enc.Encode(e); err != nil {
+		t.Error("Could not encode item into msgpack format", err)
+	} else {
+		log.Printf("Item: (%d) %v\n", len(b), b)
+	}
+
+	d := &ShortenedURL{}
+	dec := codec.NewDecoderBytes(b, &mh)
+	if err := dec.Decode(d); err != nil {
+		t.Error("Could not decode item back from msgpack format", err)
+	} else {
+		log.Printf("Item: %v\n", d)
+	}
+
+}
 
 // Add a new cached item
 // Pre-condition.: a cached item does not exist in the cache
@@ -41,8 +67,8 @@ func TestGetItem(t *testing.T) {
 		t.Error("Could not get item: ", err)
 	} else {
 		log.Printf("Item: %v\n", v)
+		log.Printf("Successfully retrieved item with key: %v \n", key)
 	}
-	log.Printf("Successfully retrieved item with key: %v \n", key)
 }
 
 // Add item to list

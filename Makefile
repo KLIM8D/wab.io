@@ -6,7 +6,8 @@
 APP  = wab.io 
 DEPS_FOLDER = .vendor
 DEPS = github.com/garyburd/redigo/redis \
-	   github.com/OneOfOne/xxhash/native
+	   github.com/OneOfOne/xxhash/native \
+	   github.com/ugorji/go/codec
 
 # Prepend our _vendor directory to the system GOPATH
 # so that import path resolution will prioritize
