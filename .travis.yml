@@ -9,3 +9,12 @@ install:
   - go get github.com/garyburd/redigo/redis
   - go get github.com/OneOfOne/xxhash/native
   - go get github.com/ugorji/go/codec
+
+notifications:
+  email: false
+  irc: 
+      channels:
+          - "chat.freenode.net#wab.io"
+      template:
+          - "%{repository} (%{commit}) : %{message} %{foo} "
+          - "Build details: %{build_url}"
