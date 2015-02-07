@@ -16,5 +16,6 @@ notifications:
       channels:
           - "chat.freenode.net#wab.io"
       template:
-          - "%{repository} (%{commit}) : %{message} %{foo} "
+          - "[%{result}] %{repository} (%{author}) (%{commit}) : %{message} "
+          - "Build duration:" %{duration}
           - "Build details: %{build_url}"
