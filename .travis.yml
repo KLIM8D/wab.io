@@ -17,5 +17,5 @@ notifications:
           - "chat.freenode.net#wab.io"
       template:
           - "[%{result}] %{repository} (%{author}) (%{commit}) : %{message} "
-          - "Build duration:" %{duration}
+          - "Build duration: %{duration}"
           - "Build details: %{build_url}"
