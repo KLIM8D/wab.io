@@ -30,6 +30,13 @@ func (conf *RedisConf) NewPool() *redis.Pool {
 	}
 }
 
+func (conf *RedisConf) ActivateUser(key string) {
+	c := conf.Pool.Get()
+	defer c.Close()
+
+	c.Send("SET", key, nil)
+}
+
 func (conf *RedisConf) Add(item *ShortenedURL) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -78,17 +85,20 @@ func (conf *RedisConf) Get(key string, e interface{}) (interface{}, error) {
 	}
 }
 
-func (conf *RedisConf) Exists(key string) (int64, error) {
+func (conf *RedisConf) Exists(key string) (bool, error) {
 	c := conf.Pool.Get()
 	defer c.Close()
 
 	if r, err := c.Do("EXISTS", key); err != nil {
-		return 0, err
+		return false, err
 	} else {
-		return r.(int64), nil
+		return r.(int64) == 1, nil
 	}
 }
 
+/*
+	Adds an element infront of the others stored in the set
+*/
 func (conf *RedisConf) RPush(key string, val ...string) (int64, error) {
 	c := conf.Pool.Get()
 	defer c.Close()

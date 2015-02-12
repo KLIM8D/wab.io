@@ -1,7 +1,12 @@
 package utils
 
 import (
+	"regexp"
 	"testing"
+)
+
+var (
+	keyFormat = regexp.MustCompile(`^[a-zA-Z0-9]{32}$`)
 )
 
 func TestKeysFormat(t *testing.T) {
@@ -9,13 +14,17 @@ func TestKeysFormat(t *testing.T) {
 
 	GenerateKeys()
 
-	for i := 0; i < 5; i++ {
-		s := <-NewKey
-		if len(s) == 32 {
-			t.Logf("Generated key: %q\n", s)
-		} else {
-			t.Error("The generated key violated the keyformat")
-		}
+	nRoutines := 100
+	nKeys := 200
+	for i := 0; i < nRoutines; i++ {
+		go func() {
+			for i := 0; i < nKeys; i++ {
+				s := <-NewKey
+				if !keyFormat.MatchString(s) {
+					t.Errorf("The generated key violated the keyformat: %q\n", s)
+				}
+			}
+		}()
 	}
 }
 
@@ -60,6 +69,7 @@ func TestGenerateKeys(t *testing.T) {
 
 func BenchmarkGenerateKey(b *testing.B) {
 	GenerateKeys()
+
 	for i := 0; i < b.N; i++ {
 		<-NewKey
 	}

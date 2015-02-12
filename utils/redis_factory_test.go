@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -22,7 +23,7 @@ func TestAddItem(t *testing.T) {
 		Url:     "http://google.com/",
 	}
 	factory.Add(v)
-	if s, err := factory.Exists(key); err != nil || s == 0 {
+	if s, err := factory.Exists(key); err != nil || s {
 		t.Error("The item did exist in the cache", err)
 	} else {
 		t.Logf("Successfully added the item with key: %v \n", key)
@@ -50,9 +51,16 @@ func TestGetItem(t *testing.T) {
 func TestAddItemList(t *testing.T) {
 	t.Log("### TestAddItemList ###")
 
-	if v, err := factory.RPush(list, "test"); err != nil {
-		t.Error("Could not add item to list: ", err)
-	} else {
-		t.Logf("Item added, status: %d\n", v)
+	values := make([]string, 10)
+	for i := 1; i <= 10; i++ {
+		values[i-1] = fmt.Sprintf("test%d", i)
+	}
+
+	for _, v := range values {
+		if _, err := factory.RPush(list, v); err != nil {
+			t.Error("Could not add item to list: ", err)
+		} else {
+			t.Logf("Item added, status: %q\n", v)
+		}
 	}
 }
