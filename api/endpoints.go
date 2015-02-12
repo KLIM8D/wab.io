@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/KLIM8D/wab.io/logs"
 	"github.com/KLIM8D/wab.io/utils"
+	"github.com/satori/go.uuid"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -38,6 +39,12 @@ func redirectUrl(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+/*
+   Service shortens the URL posted in the form field `url`
+   if key and expiration time exists, use posted duration in formfield `expire`
+   if only key exists, use the users default settings
+   else the systems default 12 hours
+*/
 func shortenUrl(w http.ResponseWriter, r *http.Request) {
 	var response string
 
@@ -52,32 +59,36 @@ func shortenUrl(w http.ResponseWriter, r *http.Request) {
 
 			sUrl := fmt.Sprintf("%x", utils.Shortener(url))
 			go func() {
-				if exists, err := factory.Exists(sUrl); err != nil || exists > 0 {
-					if key != "" {
-						logs.Trace.Printf("Added %q to key: %q", sUrl, key)
-						factory.RPush(key, sUrl)
-					}
-					return
-				}
-
 				item := &utils.ShortenedURL{
 					Key:     sUrl,
 					Expires: 43200, //12 hours
 					Url:     url,
 				}
 
-				if exp == "" && key != "" {
-					user := &utils.User{}
-					if _, err := factory.Get(key, user); user != nil && err == nil {
-						item.Expires = (time.Duration(user.Expires) * time.Minute).Seconds()
+				if key != "" {
+					if exp == "" {
+						user := &utils.User{}
+						if _, err := factory.Get(key, user); user != nil && err == nil {
+							item.Expires = (time.Duration(user.Expires) * time.Minute).Seconds()
+						}
+					} else {
+						if f, err := strconv.ParseFloat(exp, 64); err == nil {
+							item.Expires = (time.Duration(f) * time.Minute).Seconds()
+						}
 					}
-				} else if exp != "" {
-					if f, err := strconv.ParseFloat(exp, 64); err == nil {
-						item.Expires = (time.Duration(f) * time.Minute).Seconds()
+
+					if _, err := uuid.FromString(key); err == nil {
+						if exists, err := factory.Exists(sUrl); err != nil && !exists {
+							factory.ActivateUser(key)
+						}
 					}
 				}
 
 				factory.Add(item)
+				if key != "" {
+					logs.Trace.Printf("Added %q to key: %q", sUrl, key)
+					factory.RPush(key, item.Key)
+				}
 			}()
 
 			response = base + sUrl

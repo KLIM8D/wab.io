@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/ugorji/go/codec"
 	"log"
 	"testing"
@@ -38,10 +39,10 @@ func TestEncoding(t *testing.T) {
 }
 
 // Add a new cached item
-// Pre-condition.: a cached item does not exist in the cache
+// Pre-condition.: The specific cached item does not exist in the cache
 // Post-condition: the cached item is stored in the cache
 func TestAddItem(t *testing.T) {
-	log.Println("### TestAddItem ###")
+	t.Log("### TestAddItem ###")
 
 	v := &ShortenedURL{
 		Key:     key,
@@ -49,10 +50,10 @@ func TestAddItem(t *testing.T) {
 		Url:     "http://google.com/",
 	}
 	factory.Add(v)
-	if s, err := factory.Exists(key); err != nil || s == 0 {
-		t.Error("Item did not exist in the cache after Add ", err)
+	if s, err := factory.Exists(key); err != nil || s {
+		t.Error("The item did exist in the cache", err)
 	} else {
-		log.Printf("Successfully added the item with key: %v \n", key)
+		t.Logf("Successfully added the item with key: %v \n", key)
 	}
 }
 
@@ -60,7 +61,7 @@ func TestAddItem(t *testing.T) {
 // Pre-condition.: a cached item exists in the cache
 // Post-condition: the cached item is retrieved from the cache
 func TestGetItem(t *testing.T) {
-	log.Println("### TestGetItem ###")
+	t.Log("### TestGetItem ###")
 
 	e := &ShortenedURL{}
 	if v, err := factory.Get(key, e); err != nil || v == nil {
@@ -75,11 +76,18 @@ func TestGetItem(t *testing.T) {
 // Pre-condition: none
 // Post-condition: the item is added to the list with the given key
 func TestAddItemList(t *testing.T) {
-	log.Println("### TestAddItemList ###")
+	t.Log("### TestAddItemList ###")
 
-	if v, err := factory.RPush(list, "test"); err != nil {
-		t.Error("Could not add item to list: ", err)
-	} else {
-		log.Printf("Item added, status: %d\n", v)
+	values := make([]string, 10)
+	for i := 1; i <= 10; i++ {
+		values[i-1] = fmt.Sprintf("test%d", i)
+	}
+
+	for _, v := range values {
+		if _, err := factory.RPush(list, v); err != nil {
+			t.Error("Could not add item to list: ", err)
+		} else {
+			t.Logf("Item added, status: %q\n", v)
+		}
 	}
 }

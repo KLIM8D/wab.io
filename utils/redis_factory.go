@@ -52,6 +52,13 @@ func (conf *RedisConf) Decode(b []byte, v interface{}) error {
 	}
 }
 
+func (conf *RedisConf) ActivateUser(key string) {
+	c := conf.Pool.Get()
+	defer c.Close()
+
+	c.Send("SET", key, nil)
+}
+
 func (conf *RedisConf) Add(item *ShortenedURL) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -97,18 +104,21 @@ func (conf *RedisConf) Get(key string, e interface{}) (interface{}, error) {
 	}
 }
 
-func (conf *RedisConf) Exists(key string) (int64, error) {
+func (conf *RedisConf) Exists(key string) (bool, error) {
 	c := conf.Pool.Get()
 	defer c.Close()
 
 	if r, err := c.Do("EXISTS", key); err != nil {
-		return 0, err
+		return false, err
 	} else {
-		return r.(int64), nil
+		return r.(int64) == 1, nil
 	}
 }
 
-func (conf *RedisConf) LPush(key string, val ...string) (int64, error) {
+/*
+	Adds an element infront of the others stored in the set
+*/
+func (conf *RedisConf) RPush(key string, val ...string) (int64, error) {
 	c := conf.Pool.Get()
 	defer c.Close()
 
@@ -119,11 +129,14 @@ func (conf *RedisConf) LPush(key string, val ...string) (int64, error) {
 	}
 }
 
-func (conf *RedisConf) RPush(key string, val ...string) (int64, error) {
+/*
+	Adds an element as the last element of the set
+*/
+func (conf *RedisConf) LPush(key string, val ...string) (int64, error) {
 	c := conf.Pool.Get()
 	defer c.Close()
 
-	if r, err := c.Do("RPUSH", key, val); err != nil {
+	if r, err := c.Do("LPUSH", key, val); err != nil {
 		return -1, err
 	} else {
 		return r.(int64), nil

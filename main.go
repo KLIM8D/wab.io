@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/KLIM8D/wab.io/api"
 	"github.com/KLIM8D/wab.io/logs"
+	"github.com/KLIM8D/wab.io/utils"
 	"log"
 	"os"
 	"os/signal"
@@ -43,8 +44,11 @@ func main() {
 		}
 	}()
 
-	//api.StartServer()
 	b := &api.Base{ConfigFileName: "config.json"}
 	b.Init()
+
+	//Start keygenerator
+	utils.GenerateKeys()
+
 	b.Server.StartServer()
 }
