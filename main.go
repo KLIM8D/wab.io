@@ -9,11 +9,13 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"runtime"
 )
 
 var debug = flag.Int("mode", 2, "\n Options:\n 0 = Debug \n 1 = Warning \n 2 = Info \n 3 = Quiet \n")
 
 func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
 	flag.Parse()
 	switch *debug {
 	case logs.DebugMode:
@@ -39,7 +41,7 @@ func main() {
 	go func() {
 		for sig := range c {
 			fmt.Println()
-			log.Printf("captured %v, exiting...", sig)
+			log.Printf("captured %v, exiting...\n", sig)
 			os.Exit(0)
 		}
 	}()

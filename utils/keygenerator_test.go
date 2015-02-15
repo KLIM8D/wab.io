@@ -2,7 +2,9 @@ package utils
 
 import (
 	"regexp"
+	"runtime"
 	"testing"
+	"time"
 )
 
 var (
@@ -67,8 +69,12 @@ func TestGenerateKeys(t *testing.T) {
 	}
 }
 
-func BenchmarkGenerateKey(b *testing.B) {
+func BenchmarkGenerateKeys(b *testing.B) {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+	b.StopTimer()
 	GenerateKeys()
+	time.Sleep(1 * time.Second)
+	b.StartTimer()
 
 	for i := 0; i < b.N; i++ {
 		<-NewKey
