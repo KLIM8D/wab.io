@@ -6,7 +6,6 @@
 APP  = wab.io 
 DEPS_FOLDER = .vendor
 DEPS = github.com/garyburd/redigo/redis \
-	   github.com/OneOfOne/xxhash/native \
 	   github.com/ugorji/go/codec \
 	   github.com/satori/go.uuid
 

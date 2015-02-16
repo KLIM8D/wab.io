@@ -50,8 +50,8 @@ func TestAddItem(t *testing.T) {
 		Url:     "http://google.com/",
 	}
 	factory.Add(v)
-	if s, err := factory.Exists(key); err != nil || s {
-		t.Error("The item did exist in the cache", err)
+	if s, err := factory.Exists(key); err != nil || !s {
+		t.Error("The item did NOT exist in the cache", err)
 	} else {
 		t.Logf("Successfully added the item with key: %v \n", key)
 	}
@@ -69,6 +69,22 @@ func TestGetItem(t *testing.T) {
 	} else {
 		log.Printf("Item: %v\n", v)
 		log.Printf("Successfully retrieved item with key: %v \n", key)
+	}
+}
+
+// Deletes a cached item
+// Pre-condition.: a cached item exists in the cache
+// Post-condition: the cached item is removed from the cache
+func TestDeleteItem(t *testing.T) {
+	t.Log("### TestDeleteItem ###")
+
+	if result, err := factory.Delete(key); err != nil {
+	} else {
+		if result {
+			log.Printf("Item %q deleted\n", key)
+		} else {
+			t.Errorf("The item was not removed from the cache. Key: %q\n", key)
+		}
 	}
 }
 

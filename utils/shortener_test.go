@@ -27,7 +27,7 @@ func init() {
 	}
 
 	logs.Initialize()
-	Shortener2()
+	Shortener()
 }
 
 // Test the format of the shorten URLs
@@ -45,15 +45,6 @@ func TestUrlShortener(t *testing.T) {
 }
 
 func BenchmarkShortener(b *testing.B) {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-	for i := 0; i < b.N; i++ {
-		for _, v := range urls {
-			Shortener(v)
-		}
-	}
-}
-
-func BenchmarkShortener2(b *testing.B) {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	b.StopTimer()
 	time.Sleep(5 * time.Second)

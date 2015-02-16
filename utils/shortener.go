@@ -3,8 +3,6 @@ package utils
 import (
 	"bytes"
 	"github.com/KLIM8D/wab.io/logs"
-	"github.com/OneOfOne/xxhash/native"
-	"io"
 	"strings"
 	"sync/atomic"
 )
@@ -19,15 +17,7 @@ var (
 	count     int64 = 0
 )
 
-func Shortener(url string) uint32 {
-	h := xxhash.New32()
-	r := bytes.NewReader([]byte(url))
-	io.Copy(h, r)
-
-	return h.Sum32()
-}
-
-func Shortener2() {
+func Shortener() {
 	ShortUrls = make(chan string, 1024)
 	if workers < 1 {
 		workers = 1
@@ -40,11 +30,6 @@ func Shortener2() {
 		go func() {
 			for {
 				k := atomic.AddInt64(&count, int64(1))
-				if logs.Mode == logs.DebugMode {
-					if k > 1000 {
-						logs.Trace.Printf("Shortener2 - count(k): %d\n", k)
-					}
-				}
 				ShortUrls <- Encode(k)
 			}
 		}()
@@ -52,9 +37,6 @@ func Shortener2() {
 }
 
 func Encode(i int64) string {
-	if logs.Mode == logs.DebugMode {
-		logs.Trace.Printf("Encode - arg(i): %d\n", i)
-	}
 	if i == 0 {
 		return string(ALPHABET[0])
 	}
@@ -63,15 +45,10 @@ func Encode(i int64) string {
 	for i > 0 {
 		buffer.WriteByte(ALPHABET[i%BASE])
 		i = i / BASE
-		if logs.Mode == logs.DebugMode {
-			logs.Trace.Printf("Encode - loop(i): %d\n", i)
-		}
 	}
 
 	f := reverseBytes(buffer.String())
-	if logs.Mode == logs.DebugMode {
-		logs.Trace.Printf("Encode - string(f): %q\n", f)
-	}
+
 	return f
 }
 

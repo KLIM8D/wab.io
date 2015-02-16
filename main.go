@@ -49,8 +49,9 @@ func main() {
 	b := &api.Base{ConfigFileName: "config.json"}
 	b.Init()
 
-	//Start keygenerator
+	//Start workers
 	utils.GenerateKeys()
+	utils.Shortener()
 
 	b.Server.StartServer()
 }
