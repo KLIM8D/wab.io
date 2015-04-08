@@ -3,23 +3,34 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/klim8d/wab.io/api"
-	"github.com/klim8d/wab.io/logs"
-	"io/ioutil"
+	"github.com/KLIM8D/wab.io/api"
+	"github.com/KLIM8D/wab.io/logs"
+	"github.com/KLIM8D/wab.io/utils"
 	"log"
 	"os"
 	"os/signal"
+	"runtime"
 )
 
-var debug = flag.Bool("debug", false, "Turn on debug info")
+var debug = flag.Int("mode", 2, "\n Options:\n 0 = Debug \n 1 = Warning \n 2 = Info \n 3 = Quiet \n")
 
 func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
 	flag.Parse()
-	if *debug {
+	switch *debug {
+	case logs.DebugMode:
 		fmt.Println("Debugging...")
-		logs.Output = os.Stderr
-	} else {
-		logs.Output = ioutil.Discard
+		logs.Mode = logs.DebugMode
+		break
+	case logs.WarningMode:
+		logs.Mode = logs.WarningMode
+		break
+	case logs.InfoMode:
+		logs.Mode = logs.InfoMode
+		break
+	case logs.Quiet:
+		logs.Mode = logs.Quiet
+		break
 	}
 
 	logs.Initialize()
@@ -30,13 +41,17 @@ func main() {
 	go func() {
 		for sig := range c {
 			fmt.Println()
-			log.Printf("captured %v, exiting...", sig)
+			log.Printf("captured %v, exiting...\n", sig)
 			os.Exit(0)
 		}
 	}()
 
-	//api.StartServer()
 	b := &api.Base{ConfigFileName: "config.json"}
 	b.Init()
+
+	//Start workers
+	utils.GenerateKeys()
+	utils.Shortener()
+
 	b.Server.StartServer()
 }

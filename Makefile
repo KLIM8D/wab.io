@@ -6,7 +6,8 @@
 APP  = wab.io 
 DEPS_FOLDER = .vendor
 DEPS = github.com/garyburd/redigo/redis \
-	   github.com/OneOfOne/xxhash/native
+	   github.com/ugorji/go/codec \
+	   github.com/satori/go.uuid
 
 # Prepend our _vendor directory to the system GOPATH
 # so that import path resolution will prioritize
@@ -35,10 +36,13 @@ run:
 	./bin/$(APP)
 
 debug:
-	go run ./main.go -debug=1
+	go run ./main.go -mode=0
 
 test:
-	go test ./...
+	go test -v ./...
+
+benchmark:
+	go test -v -run=XXX -bench=. ./...
 
 vendor_clean:
 	rm -dRf ./$(DEPS_FOLDER)/
@@ -61,4 +65,4 @@ vendor_update: vendor_get
 
 # http://godoc.org/code.google.com/p/go.tools/cmd/vet
 vet:
-	go vet ./src/...
+	go vet ./...

@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/klim8d/wab.io/lib"
+	"github.com/KLIM8D/wab.io/utils"
 	"io/ioutil"
 )
 
@@ -18,7 +18,7 @@ func (self *Base) readConfiguration() (*Base, error) {
 	if content, err := ioutil.ReadFile(self.ConfigFileName); err != nil {
 		return nil, err
 	} else {
-		var conf lib.Configuration
+		var conf utils.Configuration
 		if err = json.Unmarshal(content, &conf); err != nil {
 			return nil, err
 		} else {
