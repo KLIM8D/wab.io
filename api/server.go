@@ -36,8 +36,11 @@ func (self *WebServer) handleRoute() RequestHandler {
 			self.handleIndex(w, r)
 
 			elapsed := time.Since(start)
-			reqInfo := fmt.Sprintf("URI: %q USER:%q FORM:%v", r.RequestURI, r.RemoteAddr, r.Form)
-			logs.Trace.Printf("Request handled: %q, elapsed %d ns\n", reqInfo, elapsed.Nanoseconds())
+			ru, ra, rf := r.RequestURI, r.RemoteAddr, r.Form
+			reqInfo := fmt.Sprintf("URI: %q USER:%q FORM:%v", ru, ra, rf)
+
+			logs.Trace.Printf("Request handled: %q, elapsed %d ns\n",
+				reqInfo, elapsed.Nanoseconds())
 		}
 	} else {
 		return self.handleIndex
@@ -51,7 +54,8 @@ func (self *WebServer) handleIndex(w http.ResponseWriter, r *http.Request) {
 		redirectUrl(w, r)
 	} else {
 		if content, err := ioutil.ReadFile("web/index.html"); err != nil {
-			fmt.Fprintf(w, "<html><head></head><body><span>An error occurred</span></body></html>")
+			fmt.Fprintf(w, `<html><head></head><body><span>An error occurred
+</span></body></html>`)
 			logs.Error.Println("Error: ", err.Error())
 		} else {
 			fmt.Fprintf(w, string(content))
