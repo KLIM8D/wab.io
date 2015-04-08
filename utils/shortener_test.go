@@ -37,7 +37,7 @@ func TestUrlShortener(t *testing.T) {
 	t.Log("### TestUrlShortener ###")
 
 	for i := 0; i < 10; i++ {
-		for range urls {
+		for _ := range urls {
 			u := <-ShortUrls
 			t.Logf("ShortenedURL: %q\n", u)
 		}
@@ -51,7 +51,7 @@ func BenchmarkShortener(b *testing.B) {
 	b.StartTimer()
 
 	for i := 0; i < b.N; i++ {
-		for range urls {
+		for _ := range urls {
 			<-ShortUrls
 		}
 	}
