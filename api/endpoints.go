@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"github.com/KLIM8D/wab.io/logs"
 	"github.com/KLIM8D/wab.io/utils"
 	"github.com/satori/go.uuid"
@@ -57,7 +56,7 @@ func shortenUrl(w http.ResponseWriter, r *http.Request) {
 			exp := r.FormValue("expire")
 			key := r.FormValue("key")
 
-			sUrl := fmt.Sprintf("%x", utils.Shortener(url))
+			sUrl := <-utils.ShortUrls
 			go func() {
 				item := &utils.ShortenedURL{
 					Key:     sUrl,
@@ -93,8 +92,8 @@ func shortenUrl(w http.ResponseWriter, r *http.Request) {
 
 			response = base + sUrl
 		} else {
-			logs.Warning.Printf("Not valid URL: %q", url)
-			response = base + "NotValidURL"
+			logs.Warning.Printf("Invalid URL: %q", url)
+			response = base + "InvalidURL"
 		}
 	}
 

@@ -89,6 +89,17 @@ func (conf *RedisConf) Add(item *ShortenedURL) (err error) {
 	return nil
 }
 
+func (conf *RedisConf) Delete(key string) (bool, error) {
+	c := conf.Pool.Get()
+	defer c.Close()
+
+	if r, err := c.Do("DEL", key); err != nil {
+		return false, err
+	} else {
+		return r.(int64) == 1, nil
+	}
+}
+
 func (conf *RedisConf) Get(key string, e interface{}) (interface{}, error) {
 	c := conf.Pool.Get()
 	defer c.Close()
@@ -96,6 +107,10 @@ func (conf *RedisConf) Get(key string, e interface{}) (interface{}, error) {
 	if r, err := c.Do("GET", key); err != nil {
 		return nil, err
 	} else {
+		if r == nil {
+			return nil, nil
+		}
+
 		if err = conf.Decode(r.([]byte), e); err != nil {
 			return nil, err
 		}
