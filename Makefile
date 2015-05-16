@@ -7,13 +7,15 @@ APP  = wab.io
 DEPS_FOLDER = .vendor
 DEPS = github.com/garyburd/redigo/redis \
 	   github.com/ugorji/go/codec \
-	   github.com/satori/go.uuid
+	   github.com/satori/go.uuid \
+	   github.com/zenazn/goji
 
 # Prepend our _vendor directory to the system GOPATH
 # so that import path resolution will prioritize
 # our third party snapshots.
 GP := ${PWD}/$(DEPS_FOLDER):${GOPATH}
 export GOPATH=$(GP)
+LOGPATH := "/var/log/wab.io/http.log"
 
 default: build
 
@@ -33,7 +35,7 @@ lint:
 	golint ./
 
 run:
-	./bin/$(APP)
+	./bin/$(APP) -mode=1 >> $(LOGPATH)
 
 debug:
 	go run ./main.go -mode=0

@@ -4,6 +4,7 @@ import (
 	"github.com/KLIM8D/wab.io/logs"
 	"github.com/KLIM8D/wab.io/utils"
 	"github.com/satori/go.uuid"
+	"github.com/zenazn/goji/web"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -20,7 +21,7 @@ func validateUrl(b string) bool {
 	return re.MatchString(b)
 }
 
-func redirectUrl(w http.ResponseWriter, r *http.Request) {
+func redirectUrl(c web.C, w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	s := r.RequestURI[1:]
@@ -44,7 +45,7 @@ func redirectUrl(w http.ResponseWriter, r *http.Request) {
    if only key exists, use the users default settings
    else the systems default 12 hours
 */
-func shortenUrl(w http.ResponseWriter, r *http.Request) {
+func shortenUrl(c web.C, w http.ResponseWriter, r *http.Request) {
 	var response string
 
 	url := r.FormValue("url")
@@ -77,7 +78,7 @@ func shortenUrl(w http.ResponseWriter, r *http.Request) {
 					}
 
 					if _, err := uuid.FromString(key); err == nil {
-						if exists, err := factory.Exists(sUrl); err != nil && !exists {
+						if exists, err := factory.Exists(key); err != nil && !exists {
 							factory.ActivateUser(key)
 						}
 					}
