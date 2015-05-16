@@ -9,6 +9,7 @@ install:
   - go get github.com/garyburd/redigo/redis
   - go get github.com/ugorji/go/codec
   - go get github.com/satori/go.uuid
+  - go get github.com/zenazn/goji
 
 notifications:
   email: false
