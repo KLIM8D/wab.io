@@ -33,7 +33,7 @@ summary {
 }
 
 footer {
-    background: #262626;
+    background: #232323;
     border: 0;
 }
 footer * {
@@ -45,14 +45,14 @@ footer * {
 }
 
 .icons li a {float:right;}
-.icons li img {margin-top: 5px;margin-left: 5px;}
+.icons li img {margin-right: 5px;}
 .ink-navigation ul.menu.horizontal li a { padding: 0.5em 0.5em;}
 .ink-navigation ul.menu.black {
-    background: #262626 none repeat scroll 0% 0%;
+    background: #232323 none repeat scroll 0% 0%;
 }
 
 .ink-tabs .tabs-content { margin-top: 0px; }
-.tabs-content{background-color: #262626; padding: 10px;color: #c3c3c3;border-bottom-left-radius: 0.5em;border-bottom-right-radius: 0.5em}
+.tabs-content{background-color: #232323;color: #c3c3c3;border-bottom-left-radius: 0.5em;border-bottom-right-radius: 0.5em}
 .tabs-nav{margin: 0 auto;}
 .tabs-nav a {color: #555;}
 .wrap {
@@ -62,3 +62,9 @@ footer * {
     margin: 0 auto -70px;
     overflow: auto;
 }
+#usage-tabs code {
+    font-family: monospace;
+    font-size: 1em;
+    padding-top: 0px;
+}
+#usage-tabs pre { margin: 0 auto; }

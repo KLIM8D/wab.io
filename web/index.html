@@ -12,6 +12,11 @@
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 
+        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+
+        <!--Highlight.js-->
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/railscasts.min.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
 
         <!-- load Ink's css from the cdn -->
         <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.1.7/css/ink-flex.min.css">
@@ -42,13 +47,13 @@ Modernizr.load({
             <header class="clearfix vertical-padding">
 
                 <h1 class="logo xlarge-push-left large-push-left">
-                    wab.io<small>bringing you the wab</small>
+                    wab.io<small>bringing you shortcuts to the wab</small>
                 </h1>
 
                 <nav class="ink-navigation xlarge-push-right large-push-right half-top-space">
                     <ul class="menu horizontal black icons">
-                        <li><img src="./img/github.png" alt="Github" /><a href="https://github.com/KLIM8D/wab.io">Source</a></li>
-                        <li><img src="./img/btc.png" alt="Donate Bitcoin" /><a href="bitcoin:1MaSucDqJ3rRh9TvmXNA9pgrRPbkJPrV8H">Donate</a></li>
+                        <li><a href="https://github.com/KLIM8D/wab.io"><img src="./img/github.png" alt="Github" />Source</a></li>
+                        <li><a href="bitcoin:1MaSucDqJ3rRh9TvmXNA9pgrRPbkJPrV8H"><img src="./img/btc.png" alt="Donate Bitcoin" />Tip Me</a></li>
                     </ul>
                 </nav>
 
@@ -56,7 +61,7 @@ Modernizr.load({
             <div class="column-group gutters">
                 <div class="all-100">
                     <h2>Usage</h2>
-                    <div id="myTabs" class="ink-tabs top">
+                    <div id="usage-tabs" class="ink-tabs top">
                         <ul class="tabs-nav">
                             <li><a class="tabs-tab" href="#linux">Linux</a></li>
                             <li><a class="tabs-tab" href="#windows">Windows</a></li>
@@ -64,17 +69,33 @@ Modernizr.load({
                         </ul>
 
                         <div id="linux" class="tabs-content">
-                            <p>
-                            curl -F url=[url] -F key=[key] https://wab.io
-                            <br><br>
-                            The field `key` is optional
-                            </p>
+                            <pre><code class="bash">
+#--commandline
+curl -F url=[url] -F key=[key] https://wab.io
+#--The field `key` is optional
+
+#--script
+#!/bin/bash
+
+WABIO_KEY=[uuid] #generate one with uuidgen|sed s/-//g
+function clipboard_insert() {
+xclip -selection clipboard
+}
+
+function wabio() {
+curl -s -F url=$("/bin/xclip" -o) -F key=WABIO_KEY https://wab.io | tr -d '\n' | clipboard_insert 
+}
+                        </code></pre>
                         </div>
                         <div id="windows" class="tabs-content">
-                            <p>Coming soon...</p>
+                            <pre><code class="bash">
+#coming soon...
+                            </code></pre>
                         </div>
                         <div id="osx" class="tabs-content">
-                            <p>Coming soon...</p>
+                            <pre><code class="bash">
+#coming soon...
+                            </code></pre>
                         </div>
                     </div>
                 </div>
@@ -107,6 +128,12 @@ Modernizr.load({
         <script>
 Ink.requireModules( ['Ink.Dom.Selector_1','Ink.UI.Tabs_1'], function( Selector, Tabs ){
     var tabsObj = new Tabs('#myTabs');
+});
+
+$(document).ready(function() {
+    $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+    });
 });
         </script>
     </body>
