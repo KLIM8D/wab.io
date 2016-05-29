@@ -12,21 +12,20 @@ import (
 )
 
 var (
-	re      = regexp.MustCompile(`(^|\s)((https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)`)
-	base    string
-	factory *utils.RedisConf
+	re   = regexp.MustCompile(`(^|\s)((https?:\/\/)?[\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?)`)
+	base string
 )
 
 func validateUrl(b string) bool {
 	return re.MatchString(b)
 }
 
-func redirectUrl(c web.C, w http.ResponseWriter, r *http.Request) {
+func (self *WebServer) redirectUrl(c web.C, w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	s := r.RequestURI[1:]
 	e := &utils.ShortenedURL{}
-	if _, err := factory.Get(s, e); err != nil {
+	if _, err := self.Factory.Get(s, e); err != nil {
 		logs.Error.Println("Error: ", err.Error())
 
 		data := []byte("Unable to redirect")
@@ -45,7 +44,7 @@ func redirectUrl(c web.C, w http.ResponseWriter, r *http.Request) {
    if only key exists, use the users default settings
    else the systems default 12 hours
 */
-func shortenUrl(c web.C, w http.ResponseWriter, r *http.Request) {
+func (self *WebServer) shortenUrl(c web.C, w http.ResponseWriter, r *http.Request) {
 	var response string
 
 	url := r.FormValue("url")
@@ -68,7 +67,7 @@ func shortenUrl(c web.C, w http.ResponseWriter, r *http.Request) {
 				if key != "" {
 					if exp == "" {
 						user := &utils.User{}
-						if _, err := factory.Get(key, user); user != nil && err == nil {
+						if _, err := self.Factory.Get(key, user); user != nil && err == nil {
 							item.Expires = (time.Duration(user.Expires) * time.Minute).Seconds()
 						}
 					} else {
@@ -78,16 +77,16 @@ func shortenUrl(c web.C, w http.ResponseWriter, r *http.Request) {
 					}
 
 					if _, err := uuid.FromString(key); err == nil {
-						if exists, err := factory.Exists(key); err != nil && !exists {
-							factory.ActivateUser(key)
+						if exists, err := self.Factory.Exists(key); err != nil && !exists {
+							self.Factory.ActivateUser(key)
 						}
 					}
 				}
 
-				factory.Add(item)
+				self.Factory.Add(item)
 				if key != "" {
 					logs.Trace.Printf("Added %q to key: %q", sUrl, key)
-					factory.RPush(key, item.Key)
+					self.Factory.RPush(key, item.Key)
 				}
 			}()
 

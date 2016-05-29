@@ -20,27 +20,16 @@
 
         <!-- load Ink's css from the cdn -->
         <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.1.7/css/ink-flex.min.css">
-        <link rel="stylesheet" type="text/css" href="http://cdn.ink.sapo.pt/3.1.7/css/font-awesome.min.css">
-        <link rel="stylesheet" type="text/css" href="./css/styles.css">
+        <link rel="stylesheet" type="text/css" href="./css/styles.css?v1">
 
         <!-- load Ink's css for IE8 -->
         <!--[if lt IE 9 ]>
             <link rel="stylesheet" href="http://cdn.ink.sapo.pt/3.1.7/css/ink-ie.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
-            <![endif]-->
+        <![endif]-->
 
-            <!-- test browser flexbox support and load legacy grid if unsupported -->
-            <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.1.7/js/modernizr.js"></script>
-            <script type="text/javascript">
-Modernizr.load({
-    test: Modernizr.flexbox,
-    nope : 'http://cdn.ink.sapo.pt/3.1.7/css/ink-legacy.min.css'
-});
-            </script>
-
-            <!-- load Ink's javascript files from the cdn -->
-            <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.1.7/js/holder.js"></script>
-            <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.1.7/js/ink-all.min.js"></script>
-            <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.1.7/js/autoload.js"></script>
+        <!-- load Ink's javascript files from the cdn -->
+        <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.1.7/js/ink-all.min.js"></script>
+        <script type="text/javascript" src="http://cdn.ink.sapo.pt/3.1.7/js/autoload.js"></script>
     </head>
     <body>
         <div class="ink-grid wrap">
@@ -127,7 +116,7 @@ curl -s -F url=$("/bin/xclip" -o) -F key=WABIO_KEY https://wab.io | tr -d '\n' |
 
         <script>
 Ink.requireModules( ['Ink.Dom.Selector_1','Ink.UI.Tabs_1'], function( Selector, Tabs ){
-    var tabsObj = new Tabs('#myTabs');
+    var tabsObj = new Tabs('#usage-tabs');
 });
 
 $(document).ready(function() {

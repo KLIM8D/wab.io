@@ -2,8 +2,6 @@ package api
 
 import (
 	"fmt"
-	"github.com/KLIM8D/wab.io/logs"
-	"github.com/KLIM8D/wab.io/utils"
 	"github.com/zenazn/goji"
 	"github.com/zenazn/goji/web"
 	"io/ioutil"
@@ -17,15 +15,13 @@ const (
 )
 
 func (self *WebServer) StartServer() error {
-	factory = utils.NewFactory(self.Config.Redis.Host)
-	base = self.Config.Web.Base
 
 	//Routes
 	//goji.Use(self.handleRoute)
 	goji.Get("/img/*", handleImage)
 	goji.Get("/css/*", handleCss)
 	goji.Get("/*", self.handleIndex)
-	goji.Post("/", shortenUrl)
+	goji.Post("/", self.shortenUrl)
 
 	goji.Serve()
 
@@ -52,7 +48,7 @@ func (self *WebServer) handleRoute(c *web.C, h http.Handler) http.Handler {
 		ru, ra, rf := r.RequestURI, r.RemoteAddr, r.Form
 		reqInfo := fmt.Sprintf("URI: %q USER:%q FORM:%v", ru, ra, rf)
 
-		logs.Trace.Printf("Request handled: %q, elapsed %d ns\n",
+		fmt.Printf("Request handled: %q, elapsed %d ns\n",
 			reqInfo, elapsed.Nanoseconds())
 	}
 	return http.HandlerFunc(fn)
@@ -60,11 +56,11 @@ func (self *WebServer) handleRoute(c *web.C, h http.Handler) http.Handler {
 
 func (self *WebServer) handleIndex(c web.C, w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" && len(r.RequestURI) > 1 {
-		redirectUrl(c, w, r)
+		self.redirectUrl(c, w, r)
 	} else {
 		if content, err := ioutil.ReadFile("web/index.html"); err != nil {
 			fmt.Fprintf(w, `An error occurred`)
-			logs.Error.Println("Error: ", err.Error())
+			fmt.Println("Error: ", err.Error())
 		} else {
 			fmt.Fprintf(w, string(content))
 		}

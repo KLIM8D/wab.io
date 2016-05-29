@@ -22,7 +22,7 @@ func (self *Base) readConfiguration() (*Base, error) {
 		if err = json.Unmarshal(content, &conf); err != nil {
 			return nil, err
 		} else {
-			self.Server = &WebServer{Config: &conf}
+			self.Server = &WebServer{Config: &conf, Factory: utils.NewFactory(conf.Redis.Host)}
 			return self, nil
 		}
 	}
